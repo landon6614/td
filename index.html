@@ -384,12 +384,7 @@
 </head>
 <body>
     <div class="photo-container" id="photoContainer">
-        <!-- 主照片 -->
-        <img src="bjjj.jpg" alt="臭土豆照片" class="main-photo" id="mainPhoto">
-        
-        <!-- 新增照片（直接位于根目录） -->
-        <img src="td.jpg" alt="额外照片" class="floating-photo" id="extraPhoto" 
-             style="animation-delay: 2s; width: clamp(150px, 25vw, 350px);">
+        <img src="td.jpg" alt="照片" class="main-photo" id="mainPhoto">
     </div>
     
     <div class="heart-container" id="heartContainer">
@@ -398,8 +393,7 @@
     
     <!-- 封面 -->
     <div class="cover" id="cover">
-        <!-- 封面照片 -->
-        <img src="bjjj.jpg" alt="臭土豆照片" class="cover-photo">
+        <img src="td.jpg" alt="照片" class="cover-photo">
         <div class="cover-title">臭土豆 我爱你</div>
         <button class="start-button" id="startButton">开始</button>
     </div>
@@ -413,7 +407,6 @@
         const mainName = document.getElementById('mainName');
         const photoContainer = document.getElementById('photoContainer');
         const mainPhoto = document.getElementById('mainPhoto');
-        const extraPhoto = document.getElementById('extraPhoto');
         const cover = document.getElementById('cover');
         const startButton = document.getElementById('startButton');
         const exitButton = document.getElementById('exitButton');
@@ -432,9 +425,8 @@
             photoSpawnInterval: 5000, // 照片生成间隔
         };
         
-        // 照片URL - 直接位于根目录
-        const PHOTO_URL = "bjjj.jpg";
-        const EXTRA_PHOTO_URL = "td.jpg";
+        // 照片URL - 直接使用td.jpg
+        const PHOTO_URL = "td.jpg";
         
         // 创建星空背景
         function createStars() {
@@ -485,7 +477,7 @@
             setInterval(createShootingStar, config.shootingStarInterval);
         }
         
-        // 创建浮动照片 - 随机选择两张照片
+        // 创建浮动照片
         function createFloatingPhoto() {
             const photo = document.createElement('img');
             const size = Math.floor(Math.random() * (config.photoSizeMax - config.photoSizeMin + 1)) + config.photoSizeMin;
@@ -494,11 +486,8 @@
             const duration = Math.random() * 10 + 10;
             const delay = Math.random() * 5;
             
-            // 随机选择主照片或新增照片
-            const useMainPhoto = Math.random() > 0.5;
-            photo.src = useMainPhoto ? PHOTO_URL : EXTRA_PHOTO_URL;
-            photo.alt = useMainPhoto ? "臭土豆照片" : "额外照片";
-            
+            photo.src = PHOTO_URL;
+            photo.alt = "照片";
             photo.className = 'floating-photo';
             photo.style.width = `${size}px`;
             photo.style.left = `${x}%`;
@@ -583,7 +572,6 @@
                 
                 mainName.style.transform = `translate(calc(-50% + ${mouseX * 30}px), calc(-50% + ${mouseY * 30}px))`;
                 mainPhoto.style.transform = `translate(calc(-50% + ${mouseX * 15}px), calc(-50% + ${mouseY * 15}px)) scale(0.8)`;
-                extraPhoto.style.transform = `translate(calc(-50% + ${mouseX * 10}px), calc(-50% + ${mouseY * 10}px)) scale(1)`;
             });
         }
         
@@ -592,13 +580,12 @@
             heartContainer.addEventListener('click', (e) => {
                 createHeart(e.clientX, e.clientY);
                 
-                // 点击时在点击位置生成小照片（随机选择）
+                // 点击时在点击位置生成小照片
                 const clickPhoto = document.createElement('img');
                 const size = 80;
-                const useMainPhoto = Math.random() > 0.5;
                 
-                clickPhoto.src = useMainPhoto ? PHOTO_URL : EXTRA_PHOTO_URL;
-                clickPhoto.alt = useMainPhoto ? "臭土豆照片" : "额外照片";
+                clickPhoto.src = PHOTO_URL;
+                clickPhoto.alt = "照片";
                 clickPhoto.className = 'floating-photo';
                 clickPhoto.style.width = `${size}px`;
                 clickPhoto.style.left = `${e.clientX - size/2}px`;
