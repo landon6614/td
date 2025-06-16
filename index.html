@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>卞俊跃我爱你 - 互动页面</title>
+    <title>臭土豆我爱你 - 互动页面</title>
     <style>
         /* 基础样式 */
         * {
@@ -384,17 +384,17 @@
 </head>
 <body>
     <div class="photo-container" id="photoContainer">
-        <img src="file:///C:/Users/legion/Desktop/bjj/bjjj.jpg" alt="卞俊跃照片" class="main-photo" id="mainPhoto">
+        <img src="bjj/bjjj.jpg" alt="臭土豆照片" class="main-photo" id="mainPhoto">
     </div>
     
     <div class="heart-container" id="heartContainer">
-        <div class="main-name" id="mainName">卞俊跃</div>
+        <div class="main-name" id="mainName">臭土豆</div>
     </div>
     
     <!-- 封面 -->
     <div class="cover" id="cover">
-        <img src="file:///C:/Users/legion/Desktop/bjj/bjjj.jpg" alt="卞俊跃照片" class="cover-photo">
-        <div class="cover-title">卞俊跃 我爱你</div>
+        <img src="bjj/bjjj.jpg" alt="臭土豆照片" class="cover-photo">
+        <div class="cover-title">臭土豆 我爱你</div>
         <button class="start-button" id="startButton">开始</button>
     </div>
     
@@ -425,8 +425,8 @@
             photoSpawnInterval: 5000, // 照片生成间隔
         };
         
-        // 照片URL - 所有照片都使用同一地址
-        const PHOTO_URL = "file:///C:/Users/legion/Desktop/bjj/bjjj.jpg";
+        // 照片URL - 使用相对路径
+        const PHOTO_URL = "bjj/bjjj.jpg";
         
         // 创建星空背景
         function createStars() {
@@ -501,7 +501,7 @@
             }, (duration + delay) * 1000);
         }
         
-        // 创建浮动的"卞俊跃"名字
+        // 创建浮动的"臭土豆"名字
         function createFloatingName() {
             const name = document.createElement('div');
             
@@ -512,7 +512,7 @@
             const duration = Math.random() * 5 + 6;
             const delay = Math.random() * 3;
             
-            name.textContent = '卞俊跃';
+            name.textContent = '臭土豆';
             name.className = 'name-float';
             name.style.fontSize = `${size}px`;
             name.style.color = color;
@@ -661,4 +661,4 @@
         });
     </script>
 </body>
-</html>    
+</html>
