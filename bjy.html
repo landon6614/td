@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卞俊跃我爱你 - 互动页面</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SimHei', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            overflow: hidden;
+            background: #000;
+            position: relative;
+        }
+        
+        .heart-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            perspective: 1000px;
+            z-index: 1;
+        }
+        
+        .main-name {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(80px, 15vw, 200px);
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 
+                0 0 10px rgba(255, 77, 109, 0.8),
+                0 0 20px rgba(255, 77, 109, 0.5),
+                0 0 30px rgba(255, 77, 109, 0.3);
+            z-index: 3;
+            opacity: 0;
+            transition: all 0.5s ease;
+            mix-blend-mode: overlay;
+        }
+        
+        .main-name.visible {
+            opacity: 0.8;
+        }
+        
+        .main-name:hover {
+            text-shadow: 
+                0 0 15px rgba(255, 77, 109, 0.9),
+                0 0 30px rgba(255, 77, 109, 0.7),
+                0 0 45px rgba(255, 77, 109, 0.5);
+            opacity: 1;
+        }
+        
+        /* 爱心样式 */
+        .heart-3d {
+            position: absolute;
+            width: clamp(20px, 4vw, 60px);
+            height: clamp(18px, 3.6vw, 54px);
+            transform-style: preserve-3d;
+            animation: rotate 15s infinite linear;
+            z-index: 2;
+            opacity: 0;
+        }
+        
+        .heart-3d.visible {
+            opacity: 1;
+        }
+        
+        .heart-3d:before,
+        .heart-3d:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 88%;
+            border-radius: 50% 50% 0 0;
+            background: linear-gradient(135deg, #ff2d55, #ff758f);
+            box-shadow: 0 0 clamp(5px, 0.7vw, 10px) rgba(255, 77, 109, 0.6);
+            opacity: clamp(0.7, 0.01vw, 0.9);
+        }
+        
+        .heart-3d:before {
+            left: 50%;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+        
+        .heart-3d:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+        
+        .heart-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 45, 85, 0.1);
+            transform: translateZ(-clamp(8px, 1.2vw, 15px));
+            filter: blur(clamp(2px, 0.3vw, 4px));
+            border-radius: 30% 30% 25% 25%;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotateX(random(360)) rotateY(random(360)) rotateZ(random(360)); }
+            100% { transform: rotateX(random(360)+360) rotateY(random(360)+360) rotateZ(random(360)+360); }
+        }
+        
+        .pulse {
+            animation: pulse 3s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: clamp(0.7, 0.01vw, 0.9); }
+            50% { transform: scale(1.05); opacity: clamp(0.9, 0.01vw, 1); }
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: clamp(1px, 0.2vw, 3px);
+            height: clamp(1px, 0.2vw, 3px);
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 4s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        .flicker {
+            animation: flicker 2s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 0.8; box-shadow: 0 0 clamp(5px, 0.7vw, 10px) rgba(255, 77, 109, 0.6); }
+            50% { opacity: 0.4; box-shadow: 0 0 clamp(3px, 0.5vw, 7px) rgba(255, 77, 109, 0.4); }
+        }
+        
+        /* 星空背景 */
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+            opacity: 0;
+        }
+        
+        .star.visible {
+            opacity: 1;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(90deg, white, transparent);
+            transform-origin: 0 0;
+            animation: shooting 5s linear infinite;
+            opacity: 0;
+        }
+        
+        .shooting-star.visible {
+            opacity: 1;
+        }
+        
+        @keyframes shooting {
+            0% { 
+                transform: translate(0, 0) rotate(45deg);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(300px, 300px) rotate(45deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 照片样式 */
+        .photo-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .floating-photo {
+            position: absolute;
+            width: clamp(100px, 20vw, 300px);
+            height: auto;
+            border-radius: 50%;
+            opacity: 0.3;
+            filter: blur(1px) brightness(0.8);
+            animation: float 15s infinite ease-in-out;
+            z-index: 1;
+            mix-blend-mode: soft-light;
+            opacity: 0;
+        }
+        
+        .floating-photo.visible {
+            opacity: 0.3;
+        }
+        
+        @keyframes float {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translate(calc(-20px + random(40px)), calc(-20px + random(40px))) scale(1.05);
+                opacity: 0.4;
+            }
+        }
+        
+        .main-photo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: clamp(200px, 40vw, 500px);
+            height: auto;
+            border-radius: 50%;
+            opacity: 0.5;
+            filter: blur(1px) brightness(0.9);
+            z-index: 2;
+            mix-blend-mode: overlay;
+            animation: pulsePhoto 8s infinite ease-in-out;
+            opacity: 0;
+        }
+        
+        .main-photo.visible {
+            opacity: 0.5;
+        }
+        
+        @keyframes pulsePhoto {
+            0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.6; }
+        }
+        
+        /* 浮动名字 */
+        .name-float {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 
+                0 0 5px rgba(255, 77, 109, 0.8),
+                0 0 10px rgba(255, 77, 109, 0.5);
+            opacity: 0;
+            white-space: nowrap;
+            z-index: 2;
+            animation: floatUp 8s linear forwards;
+        }
+        
+        .name-float.visible {
+            animation-play-state: running;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-50px) scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        /* 封面样式 */
+        .cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1B2735 0%, #090A0F 100%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: all 1s ease;
+        }
+        
+        .cover.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .cover-photo {
+            width: 80%;
+            max-width: 500px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.5);
+            margin-bottom: 30px;
+            transition: all 0.5s ease;
+        }
+        
+        .cover-title {
+            font-size: clamp(28px, 5vw, 50px);
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.8);
+            letter-spacing: 2px;
+        }
+        
+        .start-button {
+            background: linear-gradient(135deg, #ff2d55, #ff758f);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: clamp(18px, 3vw, 28px);
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 77, 109, 0.6);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .start-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 77, 109, 0.8);
+        }
+        
+        .start-button:active {
+            transform: scale(0.95);
+        }
+        
+        /* 退出按钮 */
+        .exit-button {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 101;
+            transition: all 0.3s ease;
+        }
+        
+        .exit-button:hover {
+            background: rgba(255, 77, 109, 0.8);
+            border-color: rgba(255, 77, 109);
+        }
+        
+        .exit-button:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="photo-container" id="photoContainer">
+        <img src="file:///C:/Users/legion/Desktop/bjj/bjjj.jpg" alt="卞俊跃照片" class="main-photo" id="mainPhoto">
+    </div>
+    
+    <div class="heart-container" id="heartContainer">
+        <div class="main-name" id="mainName">卞俊跃</div>
+    </div>
+    
+    <!-- 封面 -->
+    <div class="cover" id="cover">
+        <img src="file:///C:/Users/legion/Desktop/bjj/bjjj.jpg" alt="卞俊跃照片" class="cover-photo">
+        <div class="cover-title">卞俊跃 我爱你</div>
+        <button class="start-button" id="startButton">开始</button>
+    </div>
+    
+    <!-- 退出按钮 -->
+    <button class="exit-button" id="exitButton">×</button>
+    
+    <script>
+        // 初始化元素
+        const heartContainer = document.getElementById('heartContainer');
+        const mainName = document.getElementById('mainName');
+        const photoContainer = document.getElementById('photoContainer');
+        const mainPhoto = document.getElementById('mainPhoto');
+        const cover = document.getElementById('cover');
+        const startButton = document.getElementById('startButton');
+        const exitButton = document.getElementById('exitButton');
+        
+        // 配置参数
+        const config = {
+            nameCount: 50,          // 浮动名字数量
+            heartCount: 40,         // 爱心数量
+            photoCount: 8,          // 浮动照片数量
+            heartSizeMin: 20,       // 爱心最小大小
+            heartSizeMax: 60,       // 爱心最大大小
+            photoSizeMin: 100,      // 浮动照片最小大小
+            photoSizeMax: 200,      // 浮动照片最大大小
+            shootingStarInterval: 3000, // 流星间隔
+            nameSpawnInterval: 300,  // 名字生成间隔
+            photoSpawnInterval: 5000, // 照片生成间隔
+        };
+        
+        // 照片URL - 所有照片都使用同一地址
+        const PHOTO_URL = "file:///C:/Users/legion/Desktop/bjj/bjjj.jpg";
+        
+        // 创建星空背景
+        function createStars() {
+            const starsCount = Math.floor(window.innerWidth * window.innerHeight / 8000);
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 2 + 1;
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 3 + 2;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.animationDelay = `${delay}s`;
+                star.style.animationDuration = `${duration}s`;
+                
+                heartContainer.appendChild(star);
+            }
+            
+            // 创建流星
+            function createShootingStar() {
+                const shootingStar = document.createElement('div');
+                shootingStar.className = 'shooting-star';
+                
+                const x = Math.random() * 100;
+                const y = Math.random() * 30;
+                const length = Math.random() * 100 + 50;
+                const delay = Math.random() * 10;
+                
+                shootingStar.style.left = `${x}%`;
+                shootingStar.style.top = `${y}%`;
+                shootingStar.style.width = `${length}px`;
+                shootingStar.style.animationDelay = `${delay}s`;
+                
+                heartContainer.appendChild(shootingStar);
+                
+                setTimeout(() => {
+                    shootingStar.remove();
+                }, 5000);
+            }
+            
+            setInterval(createShootingStar, config.shootingStarInterval);
+        }
+        
+        // 创建浮动照片
+        function createFloatingPhoto() {
+            const photo = document.createElement('img');
+            const size = Math.floor(Math.random() * (config.photoSizeMax - config.photoSizeMin + 1)) + config.photoSizeMin;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const duration = Math.random() * 10 + 10;
+            const delay = Math.random() * 5;
+            
+            photo.src = PHOTO_URL;
+            photo.className = 'floating-photo';
+            photo.style.width = `${size}px`;
+            photo.style.left = `${x}%`;
+            photo.style.top = `${y}%`;
+            photo.style.animationDuration = `${duration}s`;
+            photo.style.animationDelay = `${delay}s`;
+            
+            photoContainer.appendChild(photo);
+            
+            setTimeout(() => {
+                photo.remove();
+            }, (duration + delay) * 1000);
+        }
+        
+        // 创建浮动的"卞俊跃"名字
+        function createFloatingName() {
+            const name = document.createElement('div');
+            
+            const size = Math.floor(Math.random() * (48 - 12 + 1)) + 12;
+            const color = `rgba(255, ${Math.floor(Math.random() * 100) + 155}, ${Math.floor(Math.random() * 100) + 155}, 0.8)`;
+            const rotation = Math.random() * 40 - 20;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 5 + 6;
+            const delay = Math.random() * 3;
+            
+            name.textContent = '卞俊跃';
+            name.className = 'name-float';
+            name.style.fontSize = `${size}px`;
+            name.style.color = color;
+            name.style.transform = `rotate(${rotation}deg)`;
+            name.style.left = `${left}%`;
+            name.style.animationDuration = `${duration}s`;
+            name.style.animationDelay = `${delay}s`;
+            
+            heartContainer.appendChild(name);
+            
+            setTimeout(() => {
+                name.remove();
+            }, (duration + delay) * 1000);
+        }
+        
+        // 创建爱心
+        function createHeart(x = null, y = null) {
+            const heart = document.createElement('div');
+            heart.className = 'heart-3d pulse flicker';
+            
+            if (x === null || y === null) {
+                x = Math.random() * window.innerWidth;
+                y = Math.random() * window.innerHeight;
+            }
+            
+            const size = Math.floor(Math.random() * (config.heartSizeMax - config.heartSizeMin + 1)) + config.heartSizeMin;
+            
+            heart.style.left = `${x - size/2}px`;
+            heart.style.top = `${y - size/2}px`;
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size * 0.9}px`;
+            heart.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            
+            heart.innerHTML = `
+                <div class="heart-face"></div>
+                <div class="sparkle" style="top: -10%; left: 50%; animation-delay: ${Math.random() * 2}s;"></div>
+                <div class="sparkle" style="top: 30%; left: -10%; animation-delay: ${Math.random() * 2 + 1}s;"></div>
+                <div class="sparkle" style="top: 70%; left: 10%; animation-delay: ${Math.random() * 2 + 2}s;"></div>
+            `;
+            
+            heartContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.style.opacity = '0';
+                setTimeout(() => {
+                    heart.remove();
+                }, 500);
+            }, 8000);
+        }
+        
+        // 鼠标交互
+        function setupMouseInteraction() {
+            heartContainer.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth - 0.5;
+                const mouseY = e.clientY / window.innerHeight - 0.5;
+                
+                mainName.style.transform = `translate(calc(-50% + ${mouseX * 30}px), calc(-50% + ${mouseY * 30}px))`;
+                mainPhoto.style.transform = `translate(calc(-50% + ${mouseX * 15}px), calc(-50% + ${mouseY * 15}px)) scale(0.8)`;
+            });
+        }
+        
+        // 点击事件
+        function setupClickEvents() {
+            heartContainer.addEventListener('click', (e) => {
+                createHeart(e.clientX, e.clientY);
+                
+                // 点击时在点击位置生成小照片
+                const clickPhoto = document.createElement('img');
+                const size = 80;
+                
+                clickPhoto.src = PHOTO_URL;
+                clickPhoto.className = 'floating-photo';
+                clickPhoto.style.width = `${size}px`;
+                clickPhoto.style.left = `${e.clientX - size/2}px`;
+                clickPhoto.style.top = `${e.clientY - size/2}px`;
+                clickPhoto.style.animation = 'pulse 1s ease-in-out forwards';
+                
+                photoContainer.appendChild(clickPhoto);
+                
+                setTimeout(() => {
+                    clickPhoto.remove();
+                }, 3000);
+            });
+        }
+        
+        // 显示所有元素
+        function showAllElements() {
+            // 显示主元素
+            const elements = document.querySelectorAll('.main-photo, .main-name, .heart-3d, .star, .shooting-star, .floating-photo, .name-float');
+            elements.forEach(el => {
+                el.classList.add('visible');
+            });
+            
+            // 开始定期创建元素
+            setInterval(createFloatingName, config.nameSpawnInterval);
+            setInterval(createFloatingPhoto, config.photoSpawnInterval);
+            
+            // 初始创建爱心
+            for (let i = 0; i < config.heartCount; i++) {
+                setTimeout(() => {
+                    createHeart();
+                }, i * 200);
+            }
+        }
+        
+        // 隐藏封面
+        function hideCover() {
+            cover.classList.add('hidden');
+            setupMouseInteraction();
+            setupClickEvents();
+        }
+        
+        // 初始化
+        function init() {
+            createStars();
+            
+            // 开始按钮事件
+            startButton.addEventListener('click', () => {
+                hideCover();
+                showAllElements();
+            });
+            
+            // 退出按钮事件
+            exitButton.addEventListener('click', () => {
+                alert('退出无效');
+            });
+        }
+        
+        // 页面加载后初始化
+        window.addEventListener('load', init);
+        
+        // 窗口 resize 时重新布局
+        window.addEventListener('resize', () => {
+            // 清空爱心和名字，保留星星和照片
+            const hearts = heartContainer.querySelectorAll('.heart-3d, .name-float');
+            hearts.forEach(el => el.remove());
+            
+            // 重新创建爱心（如果已显示）
+            if (!cover.classList.contains('hidden')) {
+                for (let i = 0; i < config.heartCount; i++) {
+                    setTimeout(() => {
+                        createHeart();
+                    }, i * 200);
+                }
+            }
+        });
+    </script>
+</body>
+</html>    
